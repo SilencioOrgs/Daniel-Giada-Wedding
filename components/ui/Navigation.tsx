@@ -14,7 +14,7 @@ export function Navigation() {
         { name: "Venue", href: "#venue" },
         { name: "Story", href: "#story" },
         { name: "Entourage", href: "#entourage" },
-        { name: "Gallery", href: "#gallery" },
+        { name: "Timeline", href: "#timeline" },
         { name: "RSVP", href: "#rsvp" },
     ];
 

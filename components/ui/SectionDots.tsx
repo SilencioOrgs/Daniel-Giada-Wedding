@@ -9,7 +9,7 @@ const sections = [
     { id: "dress-code", label: "Dress Code" },
     { id: "story", label: "Story" },
     { id: "entourage", label: "Entourage" },
-    { id: "gallery", label: "Gallery" },
+    { id: "timeline", label: "Timeline" },
     { id: "gift-guide", label: "Gift Guide" },
     { id: "rsvp", label: "RSVP" },
 ];

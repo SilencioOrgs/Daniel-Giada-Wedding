@@ -1,337 +1,198 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { GalleryLightbox } from "@/components/ui/GalleryLightbox";
-import { Heart, ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import type { ComponentType, ReactNode } from "react";
+import {
+    Camera,
+    Martini,
+    Utensils,
+    Music2,
+    PartyPopper,
+    Heart,
+    Glasses,
+    Gem,
+} from "lucide-react";
 
-interface GalleryImage {
-    id: number;
-    src: string;
-    caption?: string;
-    likes: number;
-}
+type TimelineEvent = {
+    time: string;
+    title: string;
+    side: "left" | "right";
+    icon: ComponentType<{ className?: string; size?: number }>;
+};
+
+const timelineEvents: TimelineEvent[] = [
+    { time: "2:00 PM", title: "Wedding Ceremony", side: "right", icon: Gem },
+    { time: "4:00 PM", title: "Snap & Snacks", side: "left", icon: Camera },
+    { time: "5:15 PM", title: "Start of Reception Program", side: "right", icon: Heart },
+    { time: "6:00 PM", title: "Dinner Time", side: "left", icon: Utensils },
+    { time: "8:30 PM", title: "Send Off", side: "right", icon: Glasses },
+];
 
 export function GallerySection() {
-    // Gallery images
-    const initialImages: GalleryImage[] = [
-        // Pre-wedding
-        { id: 1, src: "/photos/image0/IMG_2860.webp", caption: "Sweet Beginnings", likes: 0 },
-        { id: 2, src: "/photos/image0/IMG_2971.webp", caption: "Hand in Hand", likes: 0 },
-        { id: 3, src: "/photos/image0/IMG_2651.webp", caption: "Laughter & Love", likes: 0 },
-        { id: 4, src: "/photos/image0/IMG_2549.webp", caption: "Casual Strolls", likes: 0 },
-        { id: 5, src: "/photos/image0/IMG_2330.webp", caption: "Just Us", likes: 0 },
-        { id: 6, src: "/photos/image0/IMG_2254.webp", caption: "Quiet Moments", likes: 0 },
-
-        // Ceremony
-        { id: 7, src: "https://placehold.co/800x1200/8B4049/FFF?text=Walking+Down+the+Aisle", caption: "Walking Down the Aisle", likes: 0 },
-        { id: 8, src: "https://placehold.co/800x600/8B4049/FFF?text=The+Vows", caption: "The Vows", likes: 0 },
-        { id: 9, src: "https://placehold.co/800x1000/8B4049/FFF?text=Altarside", caption: "Altarside", likes: 0 },
-        { id: 10, src: "https://placehold.co/800x800/8B4049/FFF?text=First+Kiss", caption: "First Kiss", likes: 0 },
-        { id: 11, src: "https://placehold.co/800x1200/8B4049/FFF?text=Just+Married", caption: "Just Married", likes: 0 },
-        { id: 12, src: "https://placehold.co/800x600/8B4049/FFF?text=Confetti+Rain", caption: "Confetti Rain", likes: 0 },
-        { id: 13, src: "https://placehold.co/800x1000/8B4049/FFF?text=Family+Blessings", caption: "Family Blessings", likes: 0 },
-
-        // Reception
-        { id: 14, src: "https://placehold.co/800x800/8B4049/FFF?text=First+Dance", caption: "First Dance", likes: 0 },
-        { id: 15, src: "https://placehold.co/800x1200/8B4049/FFF?text=Party+Time", caption: "Party Time", likes: 0 },
-        { id: 16, src: "https://placehold.co/800x600/8B4049/FFF?text=Cake+Cutting", caption: "Cake Cutting", likes: 0 },
-        { id: 17, src: "https://placehold.co/800x1000/8B4049/FFF?text=Toasts", caption: "Toasts", likes: 0 },
-        { id: 18, src: "https://placehold.co/800x800/8B4049/FFF?text=Evening+Lights", caption: "Evening Lights", likes: 0 },
-        { id: 19, src: "https://placehold.co/800x1200/8B4049/FFF?text=Celebration", caption: "Celebration", likes: 0 },
-        { id: 20, src: "https://placehold.co/800x600/8B4049/FFF?text=Sparkler+Exit", caption: "Sparkler Exit", likes: 0 },
-    ];
-
-    const [images, setImages] = useState<GalleryImage[]>(initialImages);
-    const [likedImages, setLikedImages] = useState<Set<number>>(new Set());
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-    const [direction, setDirection] = useState(0);
-
-    // Auto-play carousel
-    useEffect(() => {
-        const timer = setInterval(() => {
-            handleNext();
-        }, 5000); // Change slide every 5 seconds
-
-        return () => clearInterval(timer);
-    }, [currentIndex]);
-
-    const handleLike = (imageId: number, e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        setImages(prevImages =>
-            prevImages.map(img =>
-                img.id === imageId
-                    ? { ...img, likes: likedImages.has(imageId) ? img.likes - 1 : img.likes + 1 }
-                    : img
-            )
-        );
-
-        setLikedImages(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(imageId)) {
-                newSet.delete(imageId);
-            } else {
-                newSet.add(imageId);
-            }
-            return newSet;
-        });
-
-        // TODO: When Supabase is integrated, call API here to persist like
-        // await supabase.from('image_likes').upsert({ image_id: imageId, ... })
-    };
-
-    const handleNext = () => {
-        setDirection(1);
-        setCurrentIndex((prev) => (prev + 1) % images.length);
-    };
-
-    const handlePrev = () => {
-        setDirection(-1);
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    };
-
-    const goToSlide = (index: number) => {
-        setDirection(index > currentIndex ? 1 : -1);
-        setCurrentIndex(index);
-    };
-
-    // Get visible images for the carousel (current + 2 on each side)
-    const getVisibleImages = () => {
-        const visible = [];
-        for (let i = -2; i <= 2; i++) {
-            const index = (currentIndex + i + images.length) % images.length;
-            visible.push({ ...images[index], offset: i });
-        }
-        return visible;
-    };
-
-    const slideVariants = {
-        enter: (direction: number) => ({
-            x: direction > 0 ? 1000 : -1000,
-            opacity: 0,
-            scale: 0.5,
-        }),
-        center: {
-            zIndex: 1,
-            x: 0,
-            opacity: 1,
-            scale: 1,
-        },
-        exit: (direction: number) => ({
-            zIndex: 0,
-            x: direction < 0 ? 1000 : -1000,
-            opacity: 0,
-            scale: 0.5,
-        }),
-    };
-
-    const currentImage = images[currentIndex];
-    const isLiked = likedImages.has(currentImage.id);
+    const sectionRef = useRef<HTMLElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start 80%", "end 20%"],
+    });
+    const glowOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.2, 0.6, 0.7, 0.35]);
+    const glowY = useTransform(scrollYProgress, [0, 1], [0, 420]);
 
     return (
-        <section id="gallery" className="relative py-24 px-4 overflow-hidden bg-gradient-to-b from-off-white to-white">
-            {/* Background Texture */}
-            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
-            <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-white to-transparent" />
+        <section ref={sectionRef} id="timeline" className="relative overflow-hidden bg-[#f3f3f3] px-4 py-24 md:py-28">
+            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-multiply" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-burgundy/[0.03] via-transparent to-burgundy/[0.05]" />
 
-            <div className="max-w-7xl mx-auto relative z-10">
-                {/* Header */}
+            <div className="relative z-10 mx-auto max-w-5xl">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    transition={{ duration: 0.6 }}
+                    className="mb-16 text-center"
                 >
-                    <div className="flex items-center justify-center gap-2 mb-4 text-burgundy/80">
-                        <ImageIcon size={18} />
-                        <span className="text-xs tracking-[0.4em] uppercase font-semibold" style={{ fontFamily: "var(--font-body)" }}>
-                            Captured Moments
-                        </span>
-                    </div>
-                    <h2
-                        className="text-burgundy text-5xl md:text-6xl mb-4"
-                        style={{ fontFamily: "var(--font-display)" }}
+                    <p
+                        className="mb-3 text-xs font-semibold tracking-[0.35em] uppercase text-charcoal/60"
+                        style={{ fontFamily: "var(--font-body)" }}
                     >
-                        Our Gallery
-                    </h2>
-                    <p className="text-silver-dark text-sm tracking-wide max-w-2xl mx-auto">
-                        {images.length} beautiful moments • Click to view larger
+                        Daniel and Giada
                     </p>
+                    <h2
+                        className="text-5xl text-charcoal md:text-6xl"
+                        style={{ fontFamily: "var(--font-display)", letterSpacing: "0.08em" }}
+                    >
+                        Wedding Timeline
+                    </h2>
                 </motion.div>
 
-                {/* Carousel Container */}
-                <div className="relative">
-                    {/* Main Carousel */}
-                    <div className="relative h-[500px] md:h-[600px] mb-8 flex items-center justify-center perspective-1000">
-                        {/* Side Images (Background) */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            {getVisibleImages().map((image, idx) => {
-                                if (image.offset === 0) return null; // Skip center image
+                <div className="relative mx-auto max-w-3xl pb-14">
+                    <div className="absolute bottom-6 left-5 top-0 w-[2px] bg-charcoal/20 md:left-1/2 md:-translate-x-1/2" />
+                    <motion.div
+                        className="absolute left-5 top-0 z-[1] w-[3px] origin-top rounded-full bg-gradient-to-b from-burgundy/40 via-burgundy to-burgundy/40 shadow-[0_0_18px_rgba(114,47,55,0.35)] md:left-1/2 md:-translate-x-1/2"
+                        style={{ scaleY: scrollYProgress, height: "calc(100% - 1.5rem)" }}
+                    />
+                    <motion.div
+                        className="pointer-events-none absolute left-5 z-[2] h-20 w-20 -translate-x-1/2 rounded-full bg-burgundy/20 blur-2xl md:left-1/2"
+                        style={{ opacity: glowOpacity, y: glowY }}
+                    />
 
-                                const isLeft = image.offset < 0;
-                                const distance = Math.abs(image.offset);
-                                const translateX = image.offset * 280; // Spacing between images
-                                const scale = 1 - (distance * 0.2);
-                                const opacity = 1 - (distance * 0.3);
-                                const zIndex = 10 - distance;
+                    <div className="space-y-10 md:space-y-12">
+                        {timelineEvents.map((item, index) => {
+                            const Icon = item.icon;
+                            const leftSide = item.side === "left";
 
-                                return (
-                                    <motion.div
-                                        key={`${image.id}-${idx}`}
-                                        className="absolute w-64 md:w-80 h-80 md:h-96 cursor-pointer"
-                                        style={{
-                                            zIndex,
-                                        }}
-                                        initial={false}
-                                        animate={{
-                                            x: translateX,
-                                            scale,
-                                            opacity,
-                                        }}
-                                        transition={{
-                                            duration: 0.5,
-                                            ease: "easeInOut",
-                                        }}
-                                        onClick={() => goToSlide((currentIndex + image.offset + images.length) % images.length)}
-                                    >
-                                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-xl border-4 border-white/50">
-                                            <img
-                                                src={image.src}
-                                                alt={image.caption || "Gallery Image"}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
+                            return (
+                                <motion.div
+                                    key={`${item.time}-${item.title}`}
+                                    initial={{ opacity: 0, y: 24 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.45, delay: index * 0.06 }}
+                                    whileHover={{ scale: 1.01 }}
+                                    className="relative grid grid-cols-[40px_1fr] items-start gap-4 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8"
+                                >
+                                    <div className={leftSide ? "hidden md:flex md:justify-end" : "hidden md:block"}>
+                                        {leftSide && (
+                                            <TimelineCard
+                                                time={item.time}
+                                                title={item.title}
+                                                icon={<Icon size={22} />}
                                             />
-                                            <div className="absolute inset-0 bg-black/20" />
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Center Image (Main Focus) */}
-                        <AnimatePresence initial={false} custom={direction} mode="wait">
-                            <motion.div
-                                key={currentIndex}
-                                custom={direction}
-                                variants={slideVariants}
-                                initial="enter"
-                                animate="center"
-                                exit="exit"
-                                transition={{
-                                    x: { type: "spring", stiffness: 300, damping: 30 },
-                                    opacity: { duration: 0.3 },
-                                    scale: { duration: 0.3 },
-                                }}
-                                className="relative w-80 md:w-[500px] h-96 md:h-[500px] cursor-pointer z-20"
-                                onClick={() => setLightboxIndex(currentIndex)}
-                            >
-                                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border-8 border-white group">
-                                    {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-burgundy/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
-
-                                    <img
-                                        src={currentImage.src}
-                                        alt={currentImage.caption || "Gallery Image"}
-                                        className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                                    />
-
-                                    {/* Caption */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
-                                        <p className="text-white text-xl md:text-2xl font-display tracking-wide text-center">
-                                            {currentImage.caption}
-                                        </p>
-                                    </div>
-
-                                    {/* Like Button & Counter */}
-                                    <div className="absolute top-4 right-4 z-30 flex flex-col items-center gap-2">
-                                        <motion.button
-                                            onClick={(e) => handleLike(currentImage.id, e)}
-                                            whileHover={{ scale: 1.2 }}
-                                            whileTap={{ scale: 0.9 }}
-                                            className={`p-3 rounded-full backdrop-blur-md transition-all duration-300 ${isLiked
-                                                    ? "bg-burgundy text-white shadow-lg"
-                                                    : "bg-white/30 text-white hover:bg-white/40"
-                                                }`}
-                                        >
-                                            <Heart
-                                                size={22}
-                                                fill={isLiked ? "currentColor" : "none"}
-                                                className="transition-all duration-300"
-                                            />
-                                        </motion.button>
-
-                                        {/* Like Counter */}
-                                        {currentImage.likes > 0 && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="bg-burgundy text-white text-sm font-bold px-3 py-1 rounded-full shadow-md"
-                                            >
-                                                {currentImage.likes}
-                                            </motion.div>
                                         )}
                                     </div>
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
 
-                        {/* Navigation Arrows */}
-                        <motion.button
-                            onClick={handlePrev}
-                            whileHover={{ scale: 1.1, x: -5 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="absolute left-4 md:left-8 z-30 p-4 rounded-full bg-white/90 backdrop-blur-md text-burgundy shadow-xl hover:bg-burgundy hover:text-white transition-all duration-300"
-                        >
-                            <ChevronLeft size={28} />
-                        </motion.button>
+                                    <motion.div
+                                        whileInView={{ boxShadow: "0 0 0 8px rgba(114,47,55,0.08)" }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.35, delay: index * 0.07 }}
+                                        className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-burgundy/45 bg-[#f3f3f3]"
+                                    >
+                                        <span className="h-2.5 w-2.5 rounded-full bg-burgundy/80" />
+                                    </motion.div>
+                                    <div className={leftSide ? "hidden md:block" : "hidden md:flex"}>
+                                        {!leftSide && (
+                                            <TimelineCard
+                                                time={item.time}
+                                                title={item.title}
+                                                icon={<Icon size={22} />}
+                                            />
+                                        )}
+                                    </div>
 
-                        <motion.button
-                            onClick={handleNext}
-                            whileHover={{ scale: 1.1, x: 5 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="absolute right-4 md:right-8 z-30 p-4 rounded-full bg-white/90 backdrop-blur-md text-burgundy shadow-xl hover:bg-burgundy hover:text-white transition-all duration-300"
-                        >
-                            <ChevronRight size={28} />
-                        </motion.button>
-                    </div>
-
-                    {/* Pagination Dots */}
-                    <div className="flex items-center justify-center gap-2 mt-8">
-                        {images.map((_, index) => (
-                            <motion.button
-                                key={index}
-                                onClick={() => goToSlide(index)}
-                                whileHover={{ scale: 1.3 }}
-                                whileTap={{ scale: 0.9 }}
-                                className={`transition-all duration-300 rounded-full ${index === currentIndex
-                                        ? "w-12 h-3 bg-burgundy"
-                                        : "w-3 h-3 bg-silver/40 hover:bg-burgundy/50"
-                                    }`}
-                            />
-                        ))}
-                    </div>
-
-                    {/* Image Counter */}
-                    <div className="text-center mt-6">
-                        <p className="text-burgundy/60 text-sm tracking-wider">
-                            {currentIndex + 1} / {images.length}
-                        </p>
+                                    <div className="md:hidden">
+                                        <TimelineCard
+                                            time={item.time}
+                                            title={item.title}
+                                            icon={<Icon size={20} />}
+                                        />
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </div>
-            </div>
 
-            <GalleryLightbox
-                images={images.map(img => img.src)}
-                currentIndex={lightboxIndex ?? 0}
-                isOpen={lightboxIndex !== null}
-                onClose={() => setLightboxIndex(null)}
-                onNext={() => setLightboxIndex((prev) => prev !== null ? (prev + 1) % images.length : 0)}
-                onPrev={() => setLightboxIndex((prev) => prev !== null ? (prev - 1 + images.length) % images.length : 0)}
-                onIndexChange={setLightboxIndex}
-            />
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="text-center"
+                >
+                    <p
+                        className="mb-3 text-4xl text-charcoal/75 md:text-5xl"
+                        style={{ fontFamily: "var(--font-script)" }}
+                    >
+                        Thank You
+                    </p>
+                    <p
+                        className="mx-auto max-w-3xl text-sm font-semibold tracking-[0.25em] uppercase text-charcoal/65 md:text-base"
+                        style={{ fontFamily: "var(--font-body)" }}
+                    >
+                        We are grateful that you could be with us today.
+                    </p>
+                    <div className="mt-6 flex items-center justify-center gap-3 text-charcoal/55">
+                        <Martini size={18} />
+                        <Music2 size={18} />
+                        <PartyPopper size={18} />
+                    </div>
+                </motion.div>
+            </div>
         </section>
+    );
+}
+
+type TimelineCardProps = {
+    time: string;
+    title: string;
+    icon: ReactNode;
+};
+
+function TimelineCard({ time, title, icon }: TimelineCardProps) {
+    return (
+        <motion.div
+            whileInView={{ opacity: [0.7, 1], y: [8, 0] }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.35 }}
+            className="inline-flex w-full max-w-[390px] items-center gap-3 rounded-md border border-burgundy/15 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-sm md:w-auto"
+        >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-burgundy/10 text-burgundy/80">
+                {icon}
+            </div>
+            <div>
+                <p
+                    className="text-[13px] font-bold tracking-[0.12em] uppercase text-charcoal"
+                    style={{ fontFamily: "var(--font-body)" }}
+                >
+                    {time}
+                </p>
+                <p
+                    className="text-[13px] tracking-[0.1em] uppercase text-charcoal/75 sm:whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-body)" }}
+                >
+                    {title}
+                </p>
+            </div>
+        </motion.div>
     );
 }

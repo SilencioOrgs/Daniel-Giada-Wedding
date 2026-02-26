@@ -6,6 +6,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { VenueSection } from "@/components/landing/VenueSection";
 import { DressCodeSection } from "@/components/landing/DressCodeSection";
 import { StorySection } from "@/components/landing/StorySection";
+import { GallerySection } from "@/components/landing/GallerySection";
 import { EntourageSection } from "@/components/landing/EntourageSection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { GiftGuideSection } from "@/components/landing/GiftGuideSection";
@@ -30,6 +31,7 @@ export default function Home() {
       <VenueSection />
       <DressCodeSection />
       <StorySection />
+      <GallerySection />
       <EntourageSection />
       <FAQSection />
       <GiftGuideSection />
