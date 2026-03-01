@@ -10,8 +10,7 @@ import {
     Music2,
     PartyPopper,
     Heart,
-    Glasses,
-    Gem,
+    Church,
 } from "lucide-react";
 
 type TimelineEvent = {
@@ -22,11 +21,11 @@ type TimelineEvent = {
 };
 
 const timelineEvents: TimelineEvent[] = [
-    { time: "2:00 PM", title: "Wedding Ceremony", side: "right", icon: Gem },
+    { time: "2:00 PM", title: "Wedding Ceremony", side: "right", icon: Church },
     { time: "4:00 PM", title: "Snap & Snacks", side: "left", icon: Camera },
     { time: "5:15 PM", title: "Start of Reception Program", side: "right", icon: Heart },
     { time: "6:00 PM", title: "Dinner Time", side: "left", icon: Utensils },
-    { time: "8:30 PM", title: "Send Off", side: "right", icon: Glasses },
+    { time: "8:30 PM", title: "Send Off", side: "right", icon: Music2 },
 ];
 
 export function GallerySection() {
@@ -144,12 +143,6 @@ export function GallerySection() {
                         style={{ fontFamily: "var(--font-script)" }}
                     >
                         Thank You
-                    </p>
-                    <p
-                        className="mx-auto max-w-3xl text-sm font-semibold tracking-[0.25em] uppercase text-charcoal/65 md:text-base"
-                        style={{ fontFamily: "var(--font-body)" }}
-                    >
-                        We are grateful that you could be with us today.
                     </p>
                     <div className="mt-6 flex items-center justify-center gap-3 text-charcoal/55">
                         <Martini size={18} />

@@ -13,8 +13,8 @@ export function Navigation() {
         { name: "Home", href: "#home" },
         { name: "Venue", href: "#venue" },
         { name: "Story", href: "#story" },
-        { name: "Entourage", href: "#entourage" },
         { name: "Timeline", href: "#timeline" },
+        { name: "Entourage", href: "#entourage" },
         { name: "RSVP", href: "#rsvp" },
     ];
 
