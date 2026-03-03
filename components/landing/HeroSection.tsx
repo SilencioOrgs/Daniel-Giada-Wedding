@@ -1,15 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, PlayCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Countdown } from "@/components/ui/Countdown";
 import { SilverCard } from "@/components/ui/SilverCard";
 import { VideoModal } from "@/components/ui/VideoModal";
 import { WEDDING_DETAILS } from "@/lib/mockData";
 
+const HERO_IMAGES = {
+    desktop: Array.from({ length: 19 }, (_, index) => `/prenup_desktop/${index + 1}.png`),
+    mobile: Array.from({ length: 23 }, (_, index) => `/prenup_mobile/${index + 1}.png`),
+};
+
+const FADE_DURATION_MS = 3000;
+const HOLD_DURATION_MS = 1200;
+
+function getNextImageIndex(currentIndex: number, total: number) {
+    if (total <= 1) return 0;
+
+    let nextIndex = Math.floor(Math.random() * total);
+    while (nextIndex === currentIndex) {
+        nextIndex = Math.floor(Math.random() * total);
+    }
+    return nextIndex;
+}
+
 export function HeroSection() {
     const [showVideo, setShowVideo] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [nextImageIndex, setNextImageIndex] = useState<number | null>(null);
+    const [isFading, setIsFading] = useState(false);
+    const currentImages = isMobile ? HERO_IMAGES.mobile : HERO_IMAGES.desktop;
+    const normalizedCurrentImageIndex = currentImageIndex % currentImages.length;
+    const normalizedNextImageIndex = nextImageIndex === null ? null : nextImageIndex % currentImages.length;
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 767px)");
+        const updateDevice = () => setIsMobile(mediaQuery.matches);
+        updateDevice();
+        mediaQuery.addEventListener("change", updateDevice);
+        return () => mediaQuery.removeEventListener("change", updateDevice);
+    }, []);
+
+    useEffect(() => {
+        currentImages.forEach((src) => {
+            const image = new window.Image();
+            image.src = src;
+        });
+    }, [currentImages]);
+
+    useEffect(() => {
+        if (currentImages.length <= 1) return;
+
+        let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+        const holdTimer = setTimeout(() => {
+            const upcomingIndex = getNextImageIndex(normalizedCurrentImageIndex, currentImages.length);
+            setNextImageIndex(upcomingIndex);
+            setIsFading(true);
+
+            fadeTimer = setTimeout(() => {
+                setCurrentImageIndex(upcomingIndex);
+                setNextImageIndex(null);
+                setIsFading(false);
+            }, FADE_DURATION_MS);
+        }, HOLD_DURATION_MS);
+
+        return () => {
+            clearTimeout(holdTimer);
+            if (fadeTimer) clearTimeout(fadeTimer);
+        };
+    }, [normalizedCurrentImageIndex, currentImages]);
 
     return (
         <>
@@ -20,8 +82,27 @@ export function HeroSection() {
                     videoSrc="/wedding_vid.mp4"
                 />
 
+                <div className="absolute inset-0">
+                    <div
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms]"
+                        style={{
+                            backgroundImage: `url('${currentImages[normalizedCurrentImageIndex]}')`,
+                            opacity: isFading ? 0 : 1,
+                        }}
+                    />
+                    {normalizedNextImageIndex !== null && (
+                        <div
+                            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms]"
+                            style={{
+                                backgroundImage: `url('${currentImages[normalizedNextImageIndex]}')`,
+                                opacity: isFading ? 1 : 0,
+                            }}
+                        />
+                    )}
+                </div>
+
                 {/* Silver Gradient Background */}
-                <div className="absolute inset-0 silver-gradient" />
+                <div className="absolute inset-0 silver-gradient opacity-45" />
 
                 {/* Background Pattern (Optional - Subtle) */}
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />

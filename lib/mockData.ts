@@ -178,7 +178,7 @@ export const mockStories = [
         title: "Chapter Six: The Beginning of Forever",
         subtitle: "Our wedding day",
         excerpt: "And now, here we are. Ready to stand before God and our loved ones to declare our vows...",
-        fullText: "And now, here we are. Ready to stand before God and our loved ones to declare our vows. This isn't the end of our love story, but the beautiful beginning of a new chapter as husband and wife. We look forward to a lifetime of mornings, a lifetime of laughter, and a lifetime of love. Thank you for being part of our journey.",
+        fullText: "And now, here we are. Ready to stand before God and our loved ones to declare our vows. This isn't the end of our love story, but the beautiful beginning of a new chapter as husband and wife. We look forward to a lifetime of mornings, a lifetime of laughter, and a lifetime of love. We're grateful to have you as part of our journey.",
         image: "/story/story-6.jpg",
         position: "right"
     }
