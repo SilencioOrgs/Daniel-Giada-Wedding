@@ -64,7 +64,7 @@ export function Countdown() {
                         {String(unit.value).padStart(2, "0")}
                     </motion.div>
                     <p
-                        className="text-charcoal/80 text-[10px] md:text-xs tracking-[0.2em] uppercase mt-2"
+                        className="text-burgundy text-[10px] md:text-xs tracking-[0.2em] uppercase mt-2"
                         style={{ fontFamily: "var(--font-body)" }}
                     >
                         {unit.label}

@@ -13,17 +13,12 @@ const HERO_IMAGES = {
     mobile: Array.from({ length: 23 }, (_, index) => `/prenup_mobile/${index + 1}.png`),
 };
 
-const FADE_DURATION_MS = 3000;
-const HOLD_DURATION_MS = 1200;
+const FADE_DURATION_MS = 1000;
+const HOLD_DURATION_MS = 3000;
 
 function getNextImageIndex(currentIndex: number, total: number) {
     if (total <= 1) return 0;
-
-    let nextIndex = Math.floor(Math.random() * total);
-    while (nextIndex === currentIndex) {
-        nextIndex = Math.floor(Math.random() * total);
-    }
-    return nextIndex;
+    return (currentIndex + 1) % total;
 }
 
 export function HeroSection() {
@@ -84,18 +79,20 @@ export function HeroSection() {
 
                 <div className="absolute inset-0">
                     <div
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms]"
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity"
                         style={{
                             backgroundImage: `url('${currentImages[normalizedCurrentImageIndex]}')`,
                             opacity: isFading ? 0 : 1,
+                            transitionDuration: `${FADE_DURATION_MS}ms`,
                         }}
                     />
                     {normalizedNextImageIndex !== null && (
                         <div
-                            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms]"
+                            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity"
                             style={{
                                 backgroundImage: `url('${currentImages[normalizedNextImageIndex]}')`,
                                 opacity: isFading ? 1 : 0,
+                                transitionDuration: `${FADE_DURATION_MS}ms`,
                             }}
                         />
                     )}
@@ -129,7 +126,7 @@ export function HeroSection() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5, duration: 0.8 }}
-                                className="text-silver-dark text-xs md:text-sm tracking-[0.4em] uppercase mb-4 md:mb-8 text-center"
+                                className="text-burgundy text-xs md:text-sm tracking-[0.4em] uppercase mb-4 md:mb-8 text-center"
                                 style={{ fontFamily: "var(--font-body)" }}
                             >
                                 To The Wedding Of
@@ -151,7 +148,7 @@ export function HeroSection() {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 0.9, duration: 0.6 }}
-                                    className="text-silver-dark text-3xl md:text-4xl my-2 text-center"
+                                    className="text-burgundy text-3xl md:text-4xl my-2 text-center"
                                     style={{ fontFamily: "var(--font-script)" }}
                                 >
                                     &
@@ -175,9 +172,9 @@ export function HeroSection() {
                                 transition={{ delay: 1.3, duration: 0.8 }}
                                 className="flex items-center justify-center gap-4 mb-8"
                             >
-                                <div className="h-px w-16 bg-silver" />
-                                <div className="w-2 h-2 bg-silver rotate-45 transform" />
-                                <div className="h-px w-16 bg-silver" />
+                                <div className="h-px w-16 bg-burgundy" />
+                                <div className="w-2 h-2 bg-burgundy rotate-45 transform" />
+                                <div className="h-px w-16 bg-burgundy" />
                             </motion.div>
 
                             {/* Date */}
@@ -185,7 +182,7 @@ export function HeroSection() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 1.4, duration: 0.6 }}
-                                className="text-charcoal text-sm md:text-lg tracking-[0.3em] mb-4 text-center font-medium"
+                                className="text-burgundy text-sm md:text-lg tracking-[0.3em] mb-4 text-center font-medium"
                                 style={{ fontFamily: "var(--font-body)" }}
                             >
                                 {WEDDING_DETAILS.date.full.toUpperCase()}
@@ -196,7 +193,7 @@ export function HeroSection() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 1.5, duration: 0.8 }}
-                                className="text-medium-gray text-xs md:text-sm italic font-light max-w-md mx-auto mb-1 text-center"
+                                className="text-burgundy text-xs md:text-sm italic font-light max-w-md mx-auto mb-1 text-center"
                                 style={{ fontFamily: "var(--font-display)" }}
                             >
                                 &ldquo;Therefore what GOD has joined together, let no one separate&rdquo;
@@ -207,10 +204,10 @@ export function HeroSection() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 1.6, duration: 0.6 }}
-                                className="text-silver-dark text-[10px] md:text-xs text-center"
+                                className="text-burgundy text-[10px] md:text-xs text-center"
                                 style={{ fontFamily: "var(--font-body)" }}
                             >
-                                — Mark 10:9
+                                - Mark 10:9
                             </motion.p>
                         </SilverCard>
                     </div>
@@ -262,3 +259,4 @@ export function HeroSection() {
         </>
     );
 }
+

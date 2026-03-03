@@ -120,7 +120,7 @@ export function MusicPlayer() {
 
                 {/* Play/Pause Text */}
                 <span
-                    className="text-silver-light text-xs tracking-wider uppercase hidden sm:block"
+                    className="text-burgundy text-xs tracking-wider uppercase hidden sm:block"
                     style={{ fontFamily: "var(--font-body)" }}
                 >
                     {isPlaying ? "Playing" : "Play"}
