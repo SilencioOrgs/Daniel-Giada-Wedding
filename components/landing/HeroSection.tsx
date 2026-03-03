@@ -50,10 +50,13 @@ export function HeroSection() {
         if (currentImages.length <= 1) return;
 
         let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+        let rafId: number | undefined;
         const holdTimer = setTimeout(() => {
             const upcomingIndex = getNextImageIndex(normalizedCurrentImageIndex, currentImages.length);
             setNextImageIndex(upcomingIndex);
-            setIsFading(true);
+            rafId = window.requestAnimationFrame(() => {
+                setIsFading(true);
+            });
 
             fadeTimer = setTimeout(() => {
                 setCurrentImageIndex(upcomingIndex);
@@ -65,6 +68,7 @@ export function HeroSection() {
         return () => {
             clearTimeout(holdTimer);
             if (fadeTimer) clearTimeout(fadeTimer);
+            if (rafId) window.cancelAnimationFrame(rafId);
         };
     }, [normalizedCurrentImageIndex, currentImages]);
 
@@ -82,7 +86,7 @@ export function HeroSection() {
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity"
                         style={{
                             backgroundImage: `url('${currentImages[normalizedCurrentImageIndex]}')`,
-                            opacity: isFading ? 0 : 1,
+                            opacity: 1,
                             transitionDuration: `${FADE_DURATION_MS}ms`,
                         }}
                     />
