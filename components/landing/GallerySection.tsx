@@ -138,12 +138,6 @@ export function GallerySection() {
                     transition={{ duration: 0.5, delay: 0.1 }}
                     className="text-center"
                 >
-                    <p
-                        className="mb-3 text-4xl text-charcoal/75 md:text-5xl"
-                        style={{ fontFamily: "var(--font-script)" }}
-                    >
-                        Thank You
-                    </p>
                     <div className="mt-6 flex items-center justify-center gap-3 text-charcoal/55">
                         <Martini size={18} />
                         <Music2 size={18} />
