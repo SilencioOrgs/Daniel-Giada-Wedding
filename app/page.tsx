@@ -48,31 +48,60 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.45, ease: "easeOut" } }}
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_45%),linear-gradient(135deg,rgba(128,0,32,0.75),rgba(43,43,43,0.92))]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.24),transparent_38%),linear-gradient(135deg,rgba(91,8,28,0.88),rgba(43,43,43,0.94))]" />
+            <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.08)_45%,transparent_100%)]" />
             <motion.div
-              className="relative w-full max-w-xl rounded-[2rem] border border-silver/25 bg-off-white/12 p-8 text-center backdrop-blur-xl shadow-2xl"
+              className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] border border-silver/20 bg-white/10 px-7 py-10 text-center backdrop-blur-xl shadow-2xl md:px-12 md:py-14"
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
+              <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-silver/60 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-10 bottom-0 h-px bg-gradient-to-r from-transparent via-silver/40 to-transparent" />
               <p
-                className="mb-3 text-sm uppercase tracking-[0.5em] text-silver-light"
+                className="mb-4 text-[11px] uppercase tracking-[0.55em] text-silver-light md:text-xs"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Daniel & Giada
+                Welcome To Our Wedding
               </p>
+              <div className="mb-5 flex items-center justify-center gap-4">
+                <div className="h-px w-12 bg-silver/45" />
+                <span
+                  className="text-xs uppercase tracking-[0.35em] text-off-white/80"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Daniel & Giada
+                </span>
+                <div className="h-px w-12 bg-silver/45" />
+              </div>
               <h1
-                className="mb-4 text-5xl text-white md:text-6xl"
+                className="mb-3 text-5xl leading-none text-white md:text-7xl"
                 style={{ fontFamily: "var(--font-script)" }}
               >
-                Open the Invitation
+                You Are Invited
               </h1>
               <p
-                className="mx-auto mb-8 max-w-md text-sm leading-7 text-off-white/85 md:text-base"
+                className="mx-auto mb-3 max-w-xl text-lg text-silver-light md:text-xl"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Enter the wedding website to begin the experience with music.
+                Join us in celebrating our love, laughter, and forever.
               </p>
+              <p
+                className="mx-auto mb-8 max-w-lg text-sm leading-7 text-off-white/85 md:mb-10 md:text-base"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                Open the invitation to step into our wedding story and begin the experience with music.
+              </p>
+              <div className="mb-8 flex items-center justify-center gap-3 md:mb-10">
+                <div className="h-px w-10 bg-burgundy-light/70" />
+                <p
+                  className="text-xs uppercase tracking-[0.4em] text-off-white/75 md:text-sm"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  May 16, 2026
+                </p>
+                <div className="h-px w-10 bg-burgundy-light/70" />
+              </div>
               <motion.button
                 onClick={handleEnterSite}
                 className="inline-flex items-center justify-center rounded-full border border-silver/35 bg-white px-8 py-3 text-sm font-medium uppercase tracking-[0.35em] text-burgundy shadow-lg transition-colors hover:bg-silver-light"
@@ -80,8 +109,14 @@ export default function Home() {
                 whileTap={{ scale: 0.97 }}
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Enter Site
+                Enter Our Wedding
               </motion.button>
+              <p
+                className="mt-5 text-[11px] uppercase tracking-[0.3em] text-off-white/55 md:text-xs"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Music will begin as you enter
+              </p>
             </motion.div>
           </motion.div>
         )}
