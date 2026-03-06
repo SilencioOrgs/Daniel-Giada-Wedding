@@ -5,31 +5,32 @@ import { motion } from "framer-motion";
 
 export function MusicPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [hasInteracted, setHasInteracted] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
-    // Try to autoplay after user first interacts with the page
+    // Try immediately on load, then retry on the first user interaction if the browser blocks autoplay.
     useEffect(() => {
-        const handleFirstInteraction = () => {
-            if (!hasInteracted && audioRef.current) {
-                setHasInteracted(true);
-                audioRef.current.play()
-                    .then(() => setIsPlaying(true))
-                    .catch(() => setIsPlaying(false));
+        const attemptPlay = () => {
+            if (!audioRef.current) {
+                return;
             }
+
+            audioRef.current.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => setIsPlaying(false));
         };
 
-        // Listen for any user interaction
-        window.addEventListener("click", handleFirstInteraction, { once: true });
-        window.addEventListener("scroll", handleFirstInteraction, { once: true });
-        window.addEventListener("touchstart", handleFirstInteraction, { once: true });
+        attemptPlay();
+
+        window.addEventListener("click", attemptPlay, { once: true });
+        window.addEventListener("scroll", attemptPlay, { once: true });
+        window.addEventListener("touchstart", attemptPlay, { once: true });
 
         return () => {
-            window.removeEventListener("click", handleFirstInteraction);
-            window.removeEventListener("scroll", handleFirstInteraction);
-            window.removeEventListener("touchstart", handleFirstInteraction);
+            window.removeEventListener("click", attemptPlay);
+            window.removeEventListener("scroll", attemptPlay);
+            window.removeEventListener("touchstart", attemptPlay);
         };
-    }, [hasInteracted]);
+    }, []);
 
     const togglePlay = () => {
         if (audioRef.current) {
@@ -82,6 +83,7 @@ export function MusicPlayer() {
                 src="/bgm_03.mp3"
                 loop
                 preload="auto"
+                autoPlay
             />
 
             {/* Music Control Button - Bottom Right */}
