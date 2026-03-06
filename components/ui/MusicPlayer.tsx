@@ -7,9 +7,8 @@ export function MusicPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
-    // Try immediately on load, then retry on the first user interaction if the browser blocks autoplay.
     useEffect(() => {
-        const attemptPlay = () => {
+        const handleStartBgm = () => {
             if (!audioRef.current) {
                 return;
             }
@@ -19,16 +18,10 @@ export function MusicPlayer() {
                 .catch(() => setIsPlaying(false));
         };
 
-        attemptPlay();
-
-        window.addEventListener("click", attemptPlay, { once: true });
-        window.addEventListener("scroll", attemptPlay, { once: true });
-        window.addEventListener("touchstart", attemptPlay, { once: true });
+        window.addEventListener("start-bgm", handleStartBgm);
 
         return () => {
-            window.removeEventListener("click", attemptPlay);
-            window.removeEventListener("scroll", attemptPlay);
-            window.removeEventListener("touchstart", attemptPlay);
+            window.removeEventListener("start-bgm", handleStartBgm);
         };
     }, []);
 
@@ -83,7 +76,6 @@ export function MusicPlayer() {
                 src="/bgm_03.mp3"
                 loop
                 preload="auto"
-                autoPlay
             />
 
             {/* Music Control Button - Bottom Right */}
