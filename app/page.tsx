@@ -90,7 +90,7 @@ export default function Home() {
                 className="mx-auto mb-8 max-w-lg text-sm leading-7 text-off-white/85 md:mb-10 md:text-base"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Open the invitation to step into our wedding story and begin the experience with music.
+                Let the melody pull you in-our wedding story starts with a song and a seat saved just for you.
               </p>
               <div className="mb-8 flex items-center justify-center gap-3 md:mb-10">
                 <div className="h-px w-10 bg-burgundy-light/70" />
@@ -111,12 +111,6 @@ export default function Home() {
               >
                 Enter Our Wedding
               </motion.button>
-              <p
-                className="mt-5 text-[11px] uppercase tracking-[0.3em] text-off-white/55 md:text-xs"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                Music will begin as you enter
-              </p>
             </motion.div>
           </motion.div>
         )}
