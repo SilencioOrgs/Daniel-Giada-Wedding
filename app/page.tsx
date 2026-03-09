@@ -90,7 +90,9 @@ export default function Home() {
                 className="mx-auto mb-8 max-w-lg text-sm leading-7 text-off-white/85 md:mb-10 md:text-base"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Let the melody pull you in-our wedding story starts with a song and a seat saved just for you.
+                Let the music pull you in-
+                <br />
+                our wedding story starts with a song and seat reserved especially for you.
               </p>
               <div className="mb-8 flex items-center justify-center gap-3 md:mb-10">
                 <div className="h-px w-10 bg-burgundy-light/70" />
